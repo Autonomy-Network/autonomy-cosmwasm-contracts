@@ -24,15 +24,15 @@ backtraces = ["cosmwasm-std/backtraces"]
 library = []
 
 [dependencies]
-cosmwasm-std = { version = "1.0.0", features = ["iterator"] }
-cosmwasm-storage = { version = "1.0.0", features = ["iterator"] }
-cw-storage-plus = "0.13.2"
-schemars = "0.8.1"
-serde = { version = "1.0.103", default-features = false, features = ["derive"] }
+cosmwasm-std = { version = "1.1.4", features = ["iterator"] }
+cosmwasm-storage = { version = "1.1.4", features = ["iterator"] }
+cw-storage-plus = "0.15.1"
+schemars = "0.8.11"
+serde = { version = "1.0.145", default-features = false, features = ["derive"] }
 
-cw20 = { version = "0.13.2" }
+cw20 = { version = "0.15.1" }
 
 autonomy = { path = "../../packages/autonomy", default-features = false }
 
 [dev-dependencies]
-cosmwasm-schema = { version = "1.0.0", default-features = false  }
+cosmwasm-schema = { version = "1.1.4", default-features = false  }

@@ -15,7 +15,7 @@ const PREFIX_KEY_REQUEST_INFO: &[u8] = b"request_info";
 const KEY_STATE: &[u8] = b"state";
 const PREFIX_KEY_STAKE_BALANCE: &[u8] = b"stake_balance";
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct Config {
     pub fee_amount: Uint128,
     pub fee_denom: String,
@@ -30,7 +30,7 @@ pub fn read_config(storage: &dyn Storage) -> StdResult<Config> {
     singleton_read::<Config>(storage, KEY_CONFIG).load()
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct State {
     pub curr_executing_request_id: u64,
     pub total_requests: u64,
@@ -48,7 +48,7 @@ pub fn read_state(storage: &dyn Storage) -> StdResult<State> {
     singleton_read::<State>(storage, KEY_STATE).load()
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct Request {
     // The user who registered this request.
     pub user: String,

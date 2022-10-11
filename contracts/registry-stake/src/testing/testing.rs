@@ -6,7 +6,7 @@ use autonomy::asset::{Asset, AssetInfo};
 use cosmwasm_std::testing::{mock_env, mock_info};
 use cosmwasm_std::{
     attr, from_binary, to_binary, Addr, BankMsg, Coin, CosmosMsg, Decimal, Event, Reply, ReplyOn,
-    StdError, SubMsg, SubMsgResponse, SubMsgResult, Uint128, WasmMsg,
+    SubMsg, SubMsgResponse, SubMsgResult, Uint128, WasmMsg,
 };
 
 #[test]

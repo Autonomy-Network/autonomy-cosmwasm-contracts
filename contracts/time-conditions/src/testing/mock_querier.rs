@@ -11,7 +11,7 @@ use std::marker::PhantomData;
 use autonomy::asset::{Asset, AssetInfo};
 use cw20::{BalanceResponse, Cw20QueryMsg, TokenInfoResponse};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     Pair { asset_infos: [AssetInfo; 2] },
@@ -109,7 +109,7 @@ impl Querier for WasmMockQuerier {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum MockQueryMsg {
     Price {},

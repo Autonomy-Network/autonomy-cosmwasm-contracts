@@ -1,7 +1,7 @@
 use cosmwasm_std::testing::{MockApi, MockQuerier, MockStorage, MOCK_CONTRACT_ADDR};
 use cosmwasm_std::{
     from_binary, from_slice, to_binary, Binary, Coin, ContractResult, Decimal, Empty, OwnedDeps,
-    Querier, QuerierResult, QueryRequest, SystemError, SystemResult, Uint128, WasmQuery,
+    Querier, QuerierResult, QueryRequest, SystemError, SystemResult, Uint128,
 };
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -11,7 +11,7 @@ use std::marker::PhantomData;
 use autonomy::asset::{Asset, AssetInfo};
 use cw20::{BalanceResponse, Cw20QueryMsg, TokenInfoResponse};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     Pair { asset_infos: [AssetInfo; 2] },
@@ -110,7 +110,7 @@ impl Querier for WasmMockQuerier {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum MockQueryMsg {
     Price {},
@@ -144,7 +144,7 @@ impl WasmMockQuerier {
                     name: "mAPPL".to_string(),
                     symbol: "mAPPL".to_string(),
                     decimals: 6,
-                    total_supply: total_supply,
+                    total_supply,
                 })))
             }
             Cw20QueryMsg::Balance { address } => {
@@ -183,7 +183,7 @@ impl WasmMockQuerier {
 
     pub fn with_balance(&mut self, balances: &[(&String, &[Coin])]) {
         for (addr, balance) in balances {
-            self.base.update_balance(addr.clone(), balance.to_vec());
+            self.base.update_balance(*addr, balance.to_vec());
         }
     }
 

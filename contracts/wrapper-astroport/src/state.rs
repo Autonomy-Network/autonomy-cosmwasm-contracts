@@ -6,7 +6,7 @@ use cosmwasm_storage::{singleton, singleton_read};
 
 const KEY_CONFIG: &[u8] = b"config";
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct Config {}
 
 pub fn store_config(storage: &mut dyn Storage, config: &Config) -> StdResult<()> {

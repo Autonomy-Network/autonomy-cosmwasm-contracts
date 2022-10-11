@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::Uint128;
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, JsonSchema, Debug)]
 pub struct Swap {
     pub pool_id: u64,
     pub denom_in: String,
@@ -20,7 +20,7 @@ impl Swap {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, JsonSchema, Debug)]
 pub struct Step {
     pub pool_id: u64,
     pub denom_out: String,
