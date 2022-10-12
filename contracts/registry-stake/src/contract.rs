@@ -4,8 +4,9 @@ use autonomy::types::{OrderBy, RequestStatus};
 use cosmwasm_std::entry_point;
 
 use cosmwasm_std::{
-    from_binary, to_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
-    Reply, ReplyOn, Response, StdError, StdResult, SubMsg, SubMsgResult, Uint128, WasmMsg,
+    attr, from_binary, to_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env,
+    MessageInfo, Reply, ReplyOn, Response, StdError, StdResult, SubMsg, SubMsgResult, Uint128,
+    WasmMsg,
 };
 use cw20::{Cw20ExecuteMsg, Cw20ReceiveMsg};
 
@@ -59,7 +60,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> S
     match msg {
         ExecuteMsg::SetFeeInfo {
             fee_amount,
-            fee_denom
+            fee_denom,
         } => set_fee_info(deps, env, info, fee_amount, fee_denom),
         ExecuteMsg::CreateRequest {
             target,
@@ -81,7 +82,7 @@ pub fn set_fee_info(
     _env: Env,
     _info: MessageInfo,
     fee_amount: Uint128,
-    fee_denom: String
+    fee_denom: String,
 ) -> StdResult<Response> {
     let mut config = read_config(deps.storage)?;
     config.fee_amount = fee_amount;
@@ -168,10 +169,9 @@ pub fn create_request(
     store_request(deps.storage, id, &request)?;
     store_state(deps.storage, &state)?;
 
-    Ok(Response::new().add_messages(msgs).add_attributes(vec![
-        ("action", "create_request"),
-        ("id", id.to_string().as_str()),
-    ]))
+    Ok(Response::new()
+        .add_messages(msgs)
+        .add_attributes(vec![attr("action", "create_request"), attr("id", id.to_string())]))
 }
 
 pub fn cancel_request(deps: DepsMut, _env: Env, info: MessageInfo, id: u64) -> StdResult<Response> {
@@ -224,10 +224,9 @@ pub fn cancel_request(deps: DepsMut, _env: Env, info: MessageInfo, id: u64) -> S
         amount: vec![fee_asset.deduct_tax(&deps.querier)?],
     }));
 
-    Ok(Response::new().add_messages(msgs).add_attributes(vec![
-        ("action", "cancel_request"),
-        ("id", id.to_string().as_str()),
-    ]))
+    Ok(Response::new()
+        .add_messages(msgs)
+        .add_attributes(vec![attr("action", "cancel_request"), attr("id", id.to_string())]))
 }
 
 pub fn execute_request(deps: DepsMut, info: MessageInfo, id: u64) -> StdResult<Response> {
@@ -313,10 +312,9 @@ pub fn execute_request(deps: DepsMut, info: MessageInfo, id: u64) -> StdResult<R
         reply_on: ReplyOn::Never,
     });
 
-    Ok(Response::new().add_submessages(msgs).add_attributes(vec![
-        ("action", "execute_request"),
-        ("id", id.to_string().as_str()),
-    ]))
+    Ok(Response::new()
+        .add_submessages(msgs)
+        .add_attributes(vec![attr("action", "execute_request"), attr("id", id.to_string())]))
 }
 
 pub fn receive_cw20(
@@ -400,9 +398,9 @@ pub fn stake(
     store_state(deps.storage, &state)?;
 
     Ok(Response::new().add_attributes(vec![
-        ("action", "stake"),
-        ("user", sender.to_string().as_str()),
-        ("num_stakes", num_stakes.to_string().as_str()),
+        attr("action", "stake"),
+        attr("user", sender),
+        attr("num_stakes", num_stakes.to_string()),
     ]))
 }
 
@@ -457,9 +455,9 @@ pub fn unstake(deps: DepsMut, env: Env, info: MessageInfo, idxs: Vec<u64>) -> St
     }
 
     Ok(Response::new().add_messages(msgs).add_attributes(vec![
-        ("action", "unstake"),
-        ("user", info.sender.to_string().as_str()),
-        ("count", idxs.len().to_string().as_str()),
+        attr("action", "unstake"),
+        attr("user", info.sender),
+        attr("count", idxs.len().to_string()),
     ]))
 }
 
@@ -485,9 +483,9 @@ pub fn update_executor(deps: DepsMut, env: Env) -> StdResult<Response> {
     store_state(deps.storage, &state)?;
 
     Ok(Response::new().add_attributes(vec![
-        ("action", "update_executor"),
-        ("epoch", state.last_epoch.to_string().as_str()),
-        ("executor", state.executor.to_string().as_str()),
+        attr("action", "update_executor"),
+        attr("epoch", state.last_epoch.to_string()),
+        attr("executor", state.executor),
     ]))
 }
 
@@ -503,7 +501,7 @@ pub fn execute_reply(deps: DepsMut, _env: Env, _msg: SubMsgResult) -> StdResult<
     let mut state = read_state(deps.storage)?;
     state.curr_executing_request_id = u64::MAX;
     store_state(deps.storage, &state)?;
-    Ok(Response::new().add_attributes(vec![("action", "finialize_execute")]))
+    Ok(Response::new().add_attributes(vec![attr("action", "finialize_execute")]))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
