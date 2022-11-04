@@ -1,5 +1,11 @@
 import "dotenv/config";
 
+// environment
+export const MNEMONIC = process.env.MNEMONIC || "";
+export const MAIN_NETWORK = process.env.MAIN_NETWORK || "";
+export const PREFIX = process.env.PREFIX || "";
+export const GASPRICE = process.env.GASPRICE || "";
+
 export const auto_denom = "uosmo";
 
 // testnet
