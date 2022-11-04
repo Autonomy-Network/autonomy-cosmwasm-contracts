@@ -35,7 +35,7 @@
       ]
     },
     "fee_denom": {
-      "description": "Asset denom of request execution fee; we will limit to OSMO for osmosis",
+      "description": "Asset denom of request execution fee",
       "type": "string"
     },
     "owner": {
