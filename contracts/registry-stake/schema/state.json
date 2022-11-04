@@ -1,18 +1,31 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "StateResponse",
-  "description": "Response for query registry state",
+  "title": "State",
+  "description": "Current state of the registry and stakes",
   "type": "object",
   "required": [
     "curr_executing_request_id",
+    "executor",
+    "last_epoch",
     "next_request_id",
-    "stakes_len",
+    "stakes",
     "total_recurring_fee",
     "total_requests",
-    "total_stake_amount"
+    "total_staked"
   ],
   "properties": {
     "curr_executing_request_id": {
+      "description": "Registry Request Id of currently being executed",
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "executor": {
+      "description": "Address of executor in the last epoch",
+      "type": "string"
+    },
+    "last_epoch": {
+      "description": "Last epoch for executor rotation",
       "type": "integer",
       "format": "uint64",
       "minimum": 0.0
@@ -23,11 +36,12 @@
       "format": "uint64",
       "minimum": 0.0
     },
-    "stakes_len": {
-      "description": "Lenght of stakes array",
-      "type": "integer",
-      "format": "uint64",
-      "minimum": 0.0
+    "stakes": {
+      "description": "Address list of all stakers",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "total_recurring_fee": {
       "description": "Total recurring fee amount",
@@ -38,12 +52,13 @@
       ]
     },
     "total_requests": {
+      "description": "Number of total requests in the queue",
       "type": "integer",
       "format": "uint64",
       "minimum": 0.0
     },
-    "total_stake_amount": {
-      "description": "Total amount of staked AUTO",
+    "total_staked": {
+      "description": "Staking Total amount of staked AUTO",
       "allOf": [
         {
           "$ref": "#/definitions/Uint128"

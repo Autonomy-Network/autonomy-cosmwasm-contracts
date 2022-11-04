@@ -6,7 +6,7 @@ use cosmwasm_std::{
 };
 use osmo_bindings::{OsmosisMsg, OsmosisQuery, Step, Swap, SwapAmountWithLimit};
 
-use crate::errors::WrapperError;
+use crate::error::WrapperError;
 use crate::msg::{ExecuteMsg, InstantiateMsg};
 
 #[entry_point]
@@ -37,6 +37,7 @@ pub fn execute(
         } => execute_swap(
             deps, env, info, user, first, route, amount, min_output, max_output,
         ),
+
         ExecuteMsg::CheckRange {
             user,
             denom,
@@ -56,6 +57,15 @@ pub fn execute(
     }
 }
 
+/// Wrap osmosis swap operation between two assets
+/// - Validates output amount to be in a specifc range
+/// - Params
+///     `user`: the address that receives the outputs
+///     `first`: swap info for the first pool, `denom_in` is the input asset for the swap
+///     `route`: route contains several pools connected to output asset
+///     `amount`: amount of input asset
+///     `min_output`: minimum output amount
+///     `max_output`: maximum output amount
 pub fn execute_swap(
     deps: DepsMut<OsmosisQuery>,
     env: Env,
@@ -68,6 +78,8 @@ pub fn execute_swap(
     max_output: Uint128,
 ) -> Result<Response<OsmosisMsg>, WrapperError> {
     let mut msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![];
+
+    // Prepare swap message
     let swap = OsmosisMsg::Swap {
         first: first.clone(),
         amount: SwapAmountWithLimit::ExactIn {
@@ -78,19 +90,23 @@ pub fn execute_swap(
     };
     msgs.push(swap.into());
 
-    let last_denom = if route.len() > 0 {
+    // Get output denom
+    let last_denom = if !route.is_empty() {
         route[route.len() - 1].denom_out.clone()
     } else {
         first.denom_out
     };
 
+    // Read current balance of the output asset
     let coin_balance = deps
         .querier
         .query_balance(env.contract.address.to_string(), last_denom.clone())?;
+
+    // Add msg to check output amount
     msgs.push(CosmosMsg::Wasm(WasmMsg::Execute {
         contract_addr: env.contract.address.to_string(),
         msg: to_binary(&ExecuteMsg::CheckRange {
-            user: user.to_string(),
+            user,
             denom: last_denom,
             balance_before: coin_balance.amount,
             min_output,
@@ -104,6 +120,13 @@ pub fn execute_swap(
         .add_messages(msgs))
 }
 
+/// Validates swap output result
+/// - Should be only called via this wrapper contract
+/// - Params
+///     `user`: address to receive outputs
+///     `denom`: denom for the output asset
+///     `balance_before`: balance of output asset before swap
+///     `min_output`, `max_output`: range of output amount
 pub fn execute_check_range(
     deps: DepsMut<OsmosisQuery>,
     env: Env,
@@ -114,6 +137,7 @@ pub fn execute_check_range(
     min_output: Uint128,
     max_output: Uint128,
 ) -> Result<Response<OsmosisMsg>, WrapperError> {
+    // Validate this call
     if info.sender != env.contract.address {
         return Err(WrapperError::NotWrapperContract {
             expected: env.contract.address.into(),
@@ -121,11 +145,13 @@ pub fn execute_check_range(
         });
     }
 
+    // Query current balance
     let user_addr = deps.api.addr_validate(&user)?;
     let cur_balance = deps
         .querier
         .query_balance(env.contract.address, denom.clone())?;
 
+    // Check if the output is in the range
     let output = cur_balance.amount.sub(balance_before);
     if output.lt(&min_output) || output.gt(&max_output) {
         return Err(WrapperError::InvalidOutput {
@@ -135,11 +161,11 @@ pub fn execute_check_range(
         });
     }
 
-    let mut msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![];
-    msgs.push(CosmosMsg::Bank(BankMsg::Send {
+    // Transfer output asset to the user
+    let msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![CosmosMsg::Bank(BankMsg::Send {
         to_address: user_addr.to_string(),
         amount: coins(output.u128(), denom),
-    }));
+    })];
 
     Ok(Response::new()
         .add_messages(msgs)

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "StakeAmountResponse",
+  "title": "RecurringFeeAmountResponse",
   "description": "Response for staked amount of a user",
   "type": "object",
   "required": [

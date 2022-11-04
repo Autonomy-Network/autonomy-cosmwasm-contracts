@@ -1,23 +1,63 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ConfigResponse",
+  "title": "CreateOrUpdateConfig",
   "type": "object",
-  "required": [
-    "auto",
-    "blocks_in_epoch",
-    "stan_stake"
-  ],
   "properties": {
     "auto": {
-      "$ref": "#/definitions/AssetInfo"
+      "description": "AUTO token for executors",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AssetInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "blocks_in_epoch": {
-      "type": "integer",
+      "description": "Blocks in a single epoch",
+      "type": [
+        "integer",
+        "null"
+      ],
       "format": "uint64",
       "minimum": 0.0
     },
-    "stan_stake": {
-      "$ref": "#/definitions/Uint128"
+    "fee_amount": {
+      "description": "Amount of request execution fee",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Uint128"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fee_denom": {
+      "description": "Asset denom of request execution fee",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner": {
+      "description": "Contract owner",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stake_amount": {
+      "description": "Single stake amount",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Uint128"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "definitions": {

@@ -3,6 +3,7 @@
   "title": "QueryMsg",
   "oneOf": [
     {
+      "description": "Get registry config",
       "type": "object",
       "required": [
         "config"
@@ -15,6 +16,41 @@
       "additionalProperties": false
     },
     {
+      "description": "Get current state of registry",
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "Get recurring info of ther user",
+      "type": "object",
+      "required": [
+        "recurring_fees"
+      ],
+      "properties": {
+        "recurring_fees": {
+          "type": "object",
+          "required": [
+            "user"
+          ],
+          "properties": {
+            "user": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "Get details of a single request",
       "type": "object",
       "required": [
         "request_info"
@@ -37,6 +73,7 @@
       "additionalProperties": false
     },
     {
+      "description": "Get many requests",
       "type": "object",
       "required": [
         "requests"
@@ -77,18 +114,7 @@
       "additionalProperties": false
     },
     {
-      "type": "object",
-      "required": [
-        "state"
-      ],
-      "properties": {
-        "state": {
-          "type": "object"
-        }
-      },
-      "additionalProperties": false
-    },
-    {
+      "description": "Get current executor rotation epoch info",
       "type": "object",
       "required": [
         "epoch_info"
@@ -101,6 +127,7 @@
       "additionalProperties": false
     },
     {
+      "description": "Get staked amount of a user",
       "type": "object",
       "required": [
         "stake_amount"
@@ -121,6 +148,7 @@
       "additionalProperties": false
     },
     {
+      "description": "Get array of staked addresses",
       "type": "object",
       "required": [
         "stakes"
