@@ -9,13 +9,13 @@ import { Coin, StdFee } from "@cosmjs/amino";
 import { AssetInfo, Addr, Uint128, Config, CreateOrUpdateConfig, Binary, CreateRequestInfo, Asset, EpochInfoResponse, ExecuteMsg, Cw20ReceiveMsg, InstantiateMsg, QueryMsg, OrderBy, RecurringFeeAmountResponse, RequestInfoResponse, Request, RequestsResponse, StakeAmountResponse, StakesResponse, StateResponse, State } from "./Registry.types";
 export interface RegistryReadOnlyInterface {
   contractAddress: string;
-  config: () => Promise<ConfigResponse>;
+  config: () => Promise<Config>;
   state: () => Promise<StateResponse>;
   recurringFees: ({
     user
   }: {
     user: string;
-  }) => Promise<RecurringFeesResponse>;
+  }) => Promise<RecurringFeeAmountResponse>;
   requestInfo: ({
     id
   }: {
@@ -61,7 +61,7 @@ export class RegistryQueryClient implements RegistryReadOnlyInterface {
     this.stakes = this.stakes.bind(this);
   }
 
-  config = async (): Promise<ConfigResponse> => {
+  config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
       config: {}
     });
@@ -75,7 +75,7 @@ export class RegistryQueryClient implements RegistryReadOnlyInterface {
     user
   }: {
     user: string;
-  }): Promise<RecurringFeesResponse> => {
+  }): Promise<RecurringFeeAmountResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       recurring_fees: {
         user

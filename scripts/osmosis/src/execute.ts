@@ -1,3 +1,4 @@
+import { coin } from "@cosmjs/proto-signing";
 import { getRegistryClient } from "./connection";
 import "./constants";
 
@@ -22,6 +23,9 @@ import "./constants";
 
 async function main() {
   const client = await getRegistryClient();
+  await client.stakeDenom({ numStakes: 1 }, "auto", undefined, [
+    coin(10000, "uosmo"),
+  ]);
 }
 
 main().catch(console.error);

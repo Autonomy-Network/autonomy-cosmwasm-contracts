@@ -1,5 +1,5 @@
 import { instantiateContract } from "./util";
-import { auto_denom, registryCodeId, wrapperCodeId } from "./constants";
+import { auto_denom, registryCodeId, STAN_STAKE, wrapperCodeId } from "./constants";
 import { getConnection } from "./connection";
 
 async function main() {
@@ -11,13 +11,18 @@ async function main() {
     wallet,
     registryCodeId,
     {
-      auto: {
-        native_token: {
-          denom: auto_denom,
+      config: {
+        owner: (await wallet.getAccounts())[0].address,
+        auto: {
+          native_token: {
+            denom: auto_denom,
+          },
         },
+        fee_amount: "1000",
+        fee_denom: "uosmo",
+        stake_amount: STAN_STAKE.toString(),
+        blocks_in_epoch: 1000,
       },
-      fee_amount: "1000",
-      fee_denom: "uosmo",
     }
   );
   console.log("regisry", regisry.contractAddress);
