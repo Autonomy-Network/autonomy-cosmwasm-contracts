@@ -163,7 +163,6 @@ export interface RequestInfoResponse {
 }
 export interface Request {
   created_at: number;
-  executor: string;
   input_asset?: Asset | null;
   is_recurring: boolean;
   msg: Binary;

@@ -104,7 +104,6 @@
       "type": "object",
       "required": [
         "created_at",
-        "executor",
         "is_recurring",
         "msg",
         "target",
@@ -116,10 +115,6 @@
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
-        },
-        "executor": {
-          "description": "The executor who is gonna run this request.",
-          "type": "string"
         },
         "input_asset": {
           "description": "Asset sent in advance",
