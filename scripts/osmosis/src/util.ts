@@ -59,7 +59,8 @@ export async function instantiateContract(
     codeId,
     instantiateMsg,
     "instantiate",
-    "auto"
+    "auto",
+    { admin: account.address },
   );
   return result;
 }
