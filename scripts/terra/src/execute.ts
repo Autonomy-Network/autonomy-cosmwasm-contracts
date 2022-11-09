@@ -5,9 +5,16 @@ import {
   MsgExecuteContract,
   Wallet,
 } from "@terra-money/terra.js";
+import { getConnection } from "./connection";
 
 import "./constants";
-import { auto, registry, registryCodeId, STAN_STAKE, wrapperAstroport } from "./constants";
+import {
+  auto,
+  registry,
+  registryCodeId,
+  STAN_STAKE,
+  wrapperAstroport,
+} from "./constants";
 import { sendMessage, toBase64, upgradeContract } from "./util";
 
 async function stakeAuto(client: LCDClient, wallet: Wallet, numStakes: number) {
@@ -23,6 +30,26 @@ async function stakeAuto(client: LCDClient, wallet: Wallet, numStakes: number) {
         }),
       },
     }),
+  ];
+  await sendMessage(client, await wallet.createAndSignTx({ msgs }));
+}
+
+async function stakeDenom(
+  client: LCDClient,
+  wallet: Wallet,
+  numStakes: number
+) {
+  const msgs = [
+    new MsgExecuteContract(
+      wallet.key.accAddress,
+      registry,
+      {
+        stake_denom: {
+          num_stakes: numStakes,
+        },
+      },
+      [new Coin("uluna", STAN_STAKE * numStakes)]
+    ),
   ];
   await sendMessage(client, await wallet.createAndSignTx({ msgs }));
 }
@@ -65,7 +92,8 @@ async function swapAstroport(client: LCDClient, wallet: Wallet) {
   const msg = {
     swap: {
       user: wallet.key.accAddress,
-      contract_addr: "terra1udsua9w6jljwxwgwsegvt6v657rg3ayfvemupnes7lrggd28s0wq7g8azm",
+      contract_addr:
+        "terra1udsua9w6jljwxwgwsegvt6v657rg3ayfvemupnes7lrggd28s0wq7g8azm",
       swap_msg: toBase64(swapMsg),
       offer_asset: input_asset,
       output_asset: {
@@ -167,25 +195,17 @@ async function createRequest(client: LCDClient, wallet: Wallet) {
 }
 
 async function main() {
-  const client = new LCDClient({
-    URL: process.env.MAIN_NETWORK || "",
-    chainID: process.env.CHAINID || "columbus-5",
-  });
-
-  const wallet = client.wallet(
-    new MnemonicKey({
-      mnemonic: process.env.MNEMONIC || "",
-    })
-  );
+  const { client, wallet } = await getConnection();
 
   console.log(`Wallet is ${wallet.key.accAddress}`);
 
   // await cancelRequest(client, wallet, 2);
   // await stakeAuto(client, wallet, 2);
+  await stakeDenom(client, wallet, 2);
   // await updateExecutor(client, wallet);
   // await unstakeAuto(client, wallet, [0]);
   // await approve(client, wallet);
-  await createRequest(client, wallet);
+  // await createRequest(client, wallet);
   // await upgradeContract(client, wallet, registry, registryCodeId);
 }
 

@@ -20,7 +20,7 @@ export const getConnection = async () => {
   const client = await SigningCosmWasmClient.connectWithSigner(
     MAIN_NETWORK,
     wallet,
-    { gasPrice: GASPRICE.length ? GasPrice.fromString(GASPRICE) : undefined }
+    GASPRICE.length ? { gasPrice: GasPrice.fromString(GASPRICE) } : undefined
   );
 
   return { wallet, client };

@@ -9,7 +9,9 @@ import {
   isTxError,
   MsgMigrateContract,
   AccAddress,
+  MsgStoreCode,
 } from "@terra-money/terra.js";
+import fs from "fs";
 
 export const omitEmpty = (object: object): object =>
   Object.entries(object).reduce((acc, [key, value]) => {
@@ -42,6 +44,36 @@ export async function sendMessage(client: LCDClient, tx: Tx) {
   return res;
 }
 
+export async function storeCode(
+  client: LCDClient,
+  deployer: Wallet,
+  path: string
+) {
+  const msgs = [
+    new MsgStoreCode(
+      deployer.key.accAddress,
+      fs.readFileSync(path).toString("base64")
+    ),
+  ];
+
+  const storeCodeTxResult = await sendMessage(
+    client,
+    await deployer.createAndSignTx({ msgs })
+  );
+
+  if (isTxError(storeCodeTxResult)) {
+    throw new Error(
+      `store code failed. code: ${storeCodeTxResult.code}, codespace: ${storeCodeTxResult.codespace}, raw_log: ${storeCodeTxResult.raw_log}`
+    );
+  }
+
+  const {
+    store_code: { code_id },
+  } = storeCodeTxResult.logs[0].eventsByType;
+
+  return code_id;
+}
+
 export async function deployContract(
   client: LCDClient,
   deployer: Wallet,
@@ -66,10 +98,10 @@ export async function deployContract(
   );
 
   const {
-    instantiate_contract: { contract_address },
+    instantiate: { _contract_address },
   } = instantiateTxResult.logs[0].eventsByType;
 
-  return contract_address[0];
+  return _contract_address[0];
 }
 
 export async function upgradeContract(

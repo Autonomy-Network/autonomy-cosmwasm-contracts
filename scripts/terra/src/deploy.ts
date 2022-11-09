@@ -1,18 +1,29 @@
-import { LCDClient, MnemonicKey, Wallet } from "@terra-money/terra.js";
+import { LCDClient, Wallet } from "@terra-money/terra.js";
+import { getConnection } from "./connection";
 
 import "./constants";
-import { auto, registryCodeId, wrapperAstroportCodeId } from "./constants";
+import {
+  auto_denom,
+  registryCodeId,
+  STAN_STAKE,
+  wrapperAstroportCodeId,
+} from "./constants";
 import { deployContract } from "./util";
 
 async function deployRegistry(client: LCDClient, wallet: Wallet) {
   const initMsg = {
-    auto: {
-      token: {
-        contract_addr: auto,
+    config: {
+      owner: wallet.key.accAddress,
+      auto: {
+        native_token: {
+          denom: auto_denom,
+        },
       },
+      fee_amount: "1000",
+      fee_denom: "uluna",
+      stake_amount: STAN_STAKE.toString(),
+      blocks_in_epoch: 1000,
     },
-    fee_amount: "10000",
-    fee_denom: "uluna",
   };
   const registry = await deployContract(
     client,
@@ -35,19 +46,11 @@ async function deployAstroWrapper(client: LCDClient, wallet: Wallet) {
 }
 
 async function main() {
-  const client = new LCDClient({
-    URL: process.env.MAIN_NETWORK || "",
-    chainID: process.env.CHAINID || "columbus-5",
-  });
-
-  const wallet = client.wallet(
-    new MnemonicKey({
-      mnemonic: process.env.MNEMONIC || "",
-    })
-  );
+  const { client, wallet } = await getConnection();
 
   console.log(`Deployer is ${wallet.key.accAddress}`);
 
+  await deployRegistry(client, wallet);
   await deployAstroWrapper(client, wallet);
 }
 
