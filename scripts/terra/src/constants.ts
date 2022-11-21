@@ -24,5 +24,5 @@ export const wrapperAstroport = "terra1y5mhr4s94xfjh6gzemfxkdswtmzqm20zp0hg0t5q9
 
 export const auto_denom = "uluna";
 
-export const registryCodeId = 5449;
+export const registryCodeId = 5735;
 export const wrapperAstroportCodeId = 5450;
