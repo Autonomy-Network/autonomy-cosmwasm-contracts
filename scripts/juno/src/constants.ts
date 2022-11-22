@@ -6,7 +6,7 @@ export const MAIN_NETWORK = process.env.MAIN_NETWORK || "";
 export const PREFIX = process.env.PREFIX || "";
 export const GASPRICE = process.env.GASPRICE || "";
 
-export const STAN_STAKE = 10000;
+export const STAN_STAKE = 1000;
 
 // testnet
 export const auto_denom = "ujunox";
