@@ -21,7 +21,7 @@ async function main() {
         fee_amount: "1000",
         fee_denom: "ujunox",
         stake_amount: STAN_STAKE.toString(),
-        blocks_in_epoch: 1000,
+        blocks_in_epoch: 100,
       },
     }
   );

@@ -22,7 +22,7 @@ async function deployRegistry(client: LCDClient, wallet: Wallet) {
       fee_amount: "1000",
       fee_denom: "uluna",
       stake_amount: STAN_STAKE.toString(),
-      blocks_in_epoch: 1000,
+      blocks_in_epoch: 100,
     },
   };
   const registry = await deployContract(

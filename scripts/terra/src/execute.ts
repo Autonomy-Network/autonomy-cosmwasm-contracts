@@ -1,21 +1,14 @@
 import {
   Coin,
   LCDClient,
-  MnemonicKey,
   MsgExecuteContract,
   Wallet,
 } from "@terra-money/terra.js";
 import { getConnection } from "./connection";
 
 import "./constants";
-import {
-  auto,
-  registry,
-  registryCodeId,
-  STAN_STAKE,
-  wrapperAstroport,
-} from "./constants";
-import { sendMessage, toBase64, upgradeContract } from "./util";
+import { auto, registry, STAN_STAKE, wrapperAstroport } from "./constants";
+import { sendMessage, toBase64 } from "./util";
 
 async function stakeAuto(client: LCDClient, wallet: Wallet, numStakes: number) {
   const msgs = [
@@ -190,6 +183,17 @@ async function createRequest(client: LCDClient, wallet: Wallet) {
       },
       [new Coin("uluna", "10000")]
     ),
+  ];
+  await sendMessage(client, await wallet.createAndSignTx({ msgs }));
+}
+
+async function updateConfig(client: LCDClient, wallet: Wallet, config: any) {
+  const msgs = [
+    new MsgExecuteContract(wallet.key.accAddress, registry, {
+      update_config: {
+        config,
+      },
+    }),
   ];
   await sendMessage(client, await wallet.createAndSignTx({ msgs }));
 }
