@@ -5,7 +5,7 @@ export const MNEMONIC = process.env.MNEMONIC || "";
 export const MAIN_NETWORK = process.env.MAIN_NETWORK || "";
 export const CHAINID = process.env.CHAINID || "";
 
-export const STAN_STAKE = 1000;
+export const STAN_STAKE = 100000;
 
 // phoenix mainnet
 
@@ -25,4 +25,4 @@ export const wrapperAstroport = "terra1y5mhr4s94xfjh6gzemfxkdswtmzqm20zp0hg0t5q9
 export const auto_denom = "uluna";
 
 export const registryCodeId = 5735;
-export const wrapperAstroportCodeId = 5450;
+export const wrapperAstroportCodeId = 5737;
