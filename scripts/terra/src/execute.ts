@@ -199,14 +199,7 @@ async function main() {
 
   console.log(`Wallet is ${wallet.key.accAddress}`);
 
-  // await cancelRequest(client, wallet, 2);
-  // await stakeAuto(client, wallet, 2);
-  await stakeDenom(client, wallet, 2);
-  // await updateExecutor(client, wallet);
-  // await unstakeAuto(client, wallet, [0]);
-  // await approve(client, wallet);
-  // await createRequest(client, wallet);
-  // await upgradeContract(client, wallet, registry, registryCodeId);
+  await stakeDenom(client, wallet, 1);
 }
 
 main().catch(console.error);

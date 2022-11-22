@@ -5,7 +5,7 @@ export const MNEMONIC = process.env.MNEMONIC || "";
 export const MAIN_NETWORK = process.env.MAIN_NETWORK || "";
 export const CHAINID = process.env.CHAINID || "";
 
-export const STAN_STAKE = 100000;
+export const STAN_STAKE = 1000;
 
 // phoenix mainnet
 
