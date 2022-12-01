@@ -19,7 +19,7 @@ async function deployRegistry(client: LCDClient, wallet: Wallet) {
           denom: auto_denom,
         },
       },
-      fee_amount: "1000",
+      fee_amount: "100000",
       fee_denom: "uluna",
       stake_amount: STAN_STAKE.toString(),
       blocks_in_epoch: 100,

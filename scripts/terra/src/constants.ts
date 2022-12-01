@@ -10,11 +10,13 @@ export const STAN_STAKE = 1000;
 // phoenix mainnet
 
 // export const auto = "terra1jh37p2akmwprfwr2235kjyt3wuz0s2sfenhtytg9cajsxnxfvdasnaurdp";
-// export const registry = "";
-// export const wrapperAstroport = "";
+// export const registry = "terra1zp04qw3v3vehgnrczmgd3t3x6tcktprcwyjhgk3xvsj7mh2xdkdqr9d8uz";
+// export const wrapperAstroport = "terra194wxgpym9dg3x5n62yk4678kd4tradnvxu9n2r7a4ghle9jyadmqqftnca";
 
-// export const registryCodeId = ;
-// export const wrapperAstroportCodeId = ;
+// export const auto_denom = "uluna";
+
+// export const registryCodeId = 775;
+// export const wrapperAstroportCodeId = 776;
 
 // pisco testnet
 

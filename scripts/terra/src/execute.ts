@@ -198,12 +198,49 @@ async function updateConfig(client: LCDClient, wallet: Wallet, config: any) {
   await sendMessage(client, await wallet.createAndSignTx({ msgs }));
 }
 
+async function createEmptyRequest(client: LCDClient, wallet: Wallet) {
+  const asset_info = {
+    native_token: {
+      denom: "uluna",
+    },
+  };
+
+  const msg = {
+    check_range: {
+      user: wallet.key.accAddress,
+      asset: asset_info,
+      balance_before: "0",
+      min_output: "0",
+      max_output: "0",
+    },
+  };
+
+  const msgs = [
+    new MsgExecuteContract(
+      wallet.key.accAddress,
+      registry,
+      {
+        create_request: {
+          request_info: {
+            target: wrapperAstroport,
+            msg: toBase64(msg),
+            is_recurring: false,
+          },
+        },
+      },
+      [new Coin("uluna", "100000")]
+    ),
+  ];
+  await sendMessage(client, await wallet.createAndSignTx({ msgs }));
+}
+
 async function main() {
   const { client, wallet } = await getConnection();
 
   console.log(`Wallet is ${wallet.key.accAddress}`);
 
-  await stakeDenom(client, wallet, 1);
+  // await stakeDenom(client, wallet, 10);
+  await createEmptyRequest(client, wallet);
 }
 
 main().catch(console.error);
