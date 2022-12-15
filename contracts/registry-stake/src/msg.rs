@@ -9,10 +9,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::state::Request;
 
+/// Config struct to initialze or update configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct CreateOrUpdateConfig {
-    /// Contract owner
-    pub owner: Option<String>,
+    /// Contract admin
+    pub admin: Option<String>,
 
     /// Amount of request execution fee
     pub fee_amount: Option<Uint128>,
@@ -56,6 +57,8 @@ pub struct CreateRequestInfo {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
+    /// Claim Admin
+    ClaimAdmin { },
     /// Update Config
     UpdateConfig { config: CreateOrUpdateConfig },
 
@@ -83,6 +86,13 @@ pub enum ExecuteMsg {
     Unstake { idxs: Vec<u64> },
     /// Update executor for current epoch
     UpdateExecutor {},
+
+    /// Black list
+
+    /// Add to blacklist
+    AddToBlacklist { addrs: Vec<String> },
+    /// Remove from blacklist
+    RemoveFromBlacklist { addrs: Vec<String> }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
@@ -95,6 +105,10 @@ pub enum Cw20HookMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
+    /// Get registry admin
+    Admin {},
+    /// Get registry pending admin
+    PendingAdmin {},
     /// Get registry config
     Config {},
     /// Get current state of registry
@@ -115,6 +129,8 @@ pub enum QueryMsg {
     StakeAmount { user: String },
     /// Get array of staked addresses
     Stakes { start: u64, limit: u64 },
+    /// Get array of blacklisted addresses
+    Blacklist { },
 }
 
 /// Response for query registry state
@@ -181,4 +197,10 @@ pub struct StakeAmountResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct StakesResponse {
     pub stakes: Vec<String>,
+}
+
+/// Response for staked list
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
+pub struct BlacklistResponse {
+    pub blacklist: Vec<String>,
 }

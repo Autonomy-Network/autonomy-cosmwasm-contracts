@@ -10,11 +10,11 @@ export const auto_denom = "uosmo";
 
 // testnet
 export const registry =
-  "osmo1ulqdnqjkm6v6kdehh37md4a6fs4ppyrv9jqr0ypcud9p8efygzmsstn2sy";
+  "osmo1nnxzdevdh2q2vrxteug6g0vfkz8qawg7xhn5tc7v8aawrq4qacasymx8fg";
 export const wrapper =
-  "osmo1dwpdh2clk7c8csf9ql2xj36336xsryyg4j7622jhaert9htp48gsh8u9ve";
+  "osmo1yr7asvwnwtr5aedqt5k72229fxaclqyt8x8aw4mea60xxuesgkhqpes76u";
 
-export const registryCodeId = 3620;
-export const wrapperCodeId = 3621;
+export const registryCodeId = 4699;
+export const wrapperCodeId = 4700;
 
 export const STAN_STAKE = 10000;

@@ -13,7 +13,7 @@ import { deployContract } from "./util";
 async function deployRegistry(client: LCDClient, wallet: Wallet) {
   const initMsg = {
     config: {
-      owner: wallet.key.accAddress,
+      admin: wallet.key.accAddress,
       auto: {
         native_token: {
           denom: auto_denom,

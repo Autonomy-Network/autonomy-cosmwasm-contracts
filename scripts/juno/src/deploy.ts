@@ -12,7 +12,7 @@ async function main() {
     registryCodeId,
     {
       config: {
-        owner: (await wallet.getAccounts())[0].address,
+        admin: (await wallet.getAccounts())[0].address,
         auto: {
           native_token: {
             denom: auto_denom,

@@ -22,7 +22,7 @@ export interface Config {
   blocks_in_epoch: number;
   fee_amount: Uint128;
   fee_denom: string;
-  owner: Addr;
+  admin: Addr;
   stake_amount: Uint128;
   [k: string]: unknown;
 }
@@ -31,7 +31,7 @@ export interface CreateOrUpdateConfig {
   blocks_in_epoch?: number | null;
   fee_amount?: Uint128 | null;
   fee_denom?: string | null;
-  owner?: string | null;
+  admin?: string | null;
   stake_amount?: Uint128 | null;
   [k: string]: unknown;
 }
