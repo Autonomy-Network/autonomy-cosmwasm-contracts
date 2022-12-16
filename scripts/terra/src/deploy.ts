@@ -3,7 +3,7 @@ import { getConnection } from "./connection";
 
 import "./constants";
 import {
-  auto_denom,
+  auto,
   registryCodeId,
   STAN_STAKE,
   wrapperAstroportCodeId,
@@ -15,8 +15,8 @@ async function deployRegistry(client: LCDClient, wallet: Wallet) {
     config: {
       admin: wallet.key.accAddress,
       auto: {
-        native_token: {
-          denom: auto_denom,
+        token: {
+          contract_addr: auto,
         },
       },
       fee_amount: "100000",
