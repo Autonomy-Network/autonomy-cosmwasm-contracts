@@ -8,6 +8,7 @@
     "deploy": "npm run compile && node build/deploy.js",
     "execute": "npm run compile && node build/execute.js",
     "upload": "npm run compile && node build/upload.js",
+    "migrate": "npm run compile && node build/migrate.js",
     "test": "npm run compile && node build/test.js"
   },
   "author": "",

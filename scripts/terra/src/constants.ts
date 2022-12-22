@@ -15,8 +15,8 @@ export const STAN_STAKE = 1000000;
 
 // export const auto_denom = "uluna";
 
-// export const registryCodeId = 865;
-// export const wrapperAstroportCodeId = 866;
+// export const registryCodeId = 882;
+// export const wrapperAstroportCodeId = 883;
 // export const cw20CodeId = 870;
 
 // pisco testnet
@@ -27,6 +27,6 @@ export const wrapperAstroport = "terra1mc0wr7n2mmfu3crp4xqxun6spgtenacwtzzz249p6
 
 export const auto_denom = "uluna";
 
-export const registryCodeId = 6290;
-export const wrapperAstroportCodeId = 6291;
+export const registryCodeId = 6456;
+export const wrapperAstroportCodeId = 6457;
 export const cw20CodeId = 6338;

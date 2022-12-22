@@ -108,10 +108,11 @@ export async function upgradeContract(
   client: LCDClient,
   wallet: Wallet,
   contract: AccAddress,
-  codeId: number
+  codeId: number,
+  msg: any
 ) {
   const msgs = [
-    new MsgMigrateContract(wallet.key.accAddress, contract, codeId, {}),
+    new MsgMigrateContract(wallet.key.accAddress, contract, codeId, msg),
   ];
 
   await sendMessage(client, await wallet.createAndSignTx({ msgs }));
