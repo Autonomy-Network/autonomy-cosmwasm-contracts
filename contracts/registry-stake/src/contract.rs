@@ -30,6 +30,8 @@ use crate::state::{
 const CONTRACT_NAME: &str = "autonomy-registry-stake";
 /// Contract version that is used for migration.
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+/// Hard cap of stakes count
+const MAX_STAKES: u32 = 10000;
 
 /// ## Description
 /// Creates a new contract with the specified parameters in the [`InstantiateMsg`].
@@ -464,12 +466,19 @@ pub fn execute_request(
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
     let request = REQUESTS.load(deps.storage, id)?;
+    let target = deps.api.addr_validate(&request.target)?;
     let mut state = STATE.load(deps.storage)?;
+
+    // Check if blacklisted
+    if BLACKLIST.has(deps.storage, &target) {
+        return Err(ContractError::TargetBlacklisted {});
+    }
 
     // Validate executor
     let cur_epoch = env.block.height / config.blocks_in_epoch * config.blocks_in_epoch;
     if cur_epoch != state.last_epoch {
-        return Err(ContractError::ExecutorNotUpdated {});
+        _update_executor(&mut state, env, config.blocks_in_epoch);
+        STATE.save(deps.storage, &state)?;
     }
 
     if !state.executor.is_empty() {
@@ -501,7 +510,6 @@ pub fn execute_request(
     let mut msgs = vec![];
 
     if let Some(input_asset) = request.input_asset.clone() {
-        let target = deps.api.addr_validate(&request.target)?;
         msgs.push(SubMsg {
             id: 0,
             msg: input_asset.into_msg(&deps.querier, target)?,
@@ -529,7 +537,7 @@ pub fn execute_request(
     };
     msgs.push(SubMsg {
         id: 0,
-        msg: fee_asset.into_msg(&deps.querier, info.sender)?,
+        msg: fee_asset.into_msg(&deps.querier, info.sender.clone())?,
         gas_limit: None,
         reply_on: ReplyOn::Never,
     });
@@ -545,7 +553,7 @@ pub fn execute_request(
     Ok(Response::new().add_submessages(msgs).add_attributes(vec![
         attr("action", "execute_request"),
         attr("id", id.to_string()),
-        attr("executor", state.executor),
+        attr("executor", info.sender),
     ]))
 }
 
@@ -753,6 +761,11 @@ pub fn stake(
     let mut state = STATE.load(deps.storage)?;
     _update_executor(&mut state, env, config.blocks_in_epoch);
     STATE.save(deps.storage, &state)?;
+
+    // Validate hard cap
+    if state.stakes.len() as u64 + num_stakes > MAX_STAKES as u64 {
+        return Err(ContractError::StakesExceedCap {});
+    }
 
     // Update stakes array
     for _ in 0..num_stakes {
