@@ -9,7 +9,8 @@
     "execute": "npm run compile && node build/execute.js",
     "bot": "npm run compile && node build/bot.js",
     "upload": "npm run compile && node build/upload.js",
-    "migrate": "npm run compile && node build/migrate.js"
+    "migrate": "npm run compile && node build/migrate.js",
+    "sendToken": "npm run compile && node build/sendTokens.js"
   },
   "author": "",
   "license": "ISC",
