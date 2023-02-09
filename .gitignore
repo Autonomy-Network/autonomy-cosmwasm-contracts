@@ -23,3 +23,5 @@ integration-tests/src/config/localjunoConstants.ts
 integration-tests/src/config/localterraConstants.ts
 integration-tests/src/config/localosmosisConstants.ts
 integration-tests/src/config/wasmPaths.ts
+
+.env

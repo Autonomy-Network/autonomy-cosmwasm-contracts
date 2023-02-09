@@ -1,9 +1,72 @@
-import { coin } from "@cosmjs/proto-signing";
-import { getRegistryClient } from "./connection";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { Coin, coin, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { GasPrice } from "@cosmjs/stargate";
 import "./constants";
-import { wrapper } from "./constants";
+import {
+  STAN_STAKE,
+  wrapper,
+  registry,
+  auto_denom,
+  GASPRICE,
+  MAIN_NETWORK,
+} from "./constants";
 import { RegistryClient } from "./ts/registry/Registry.client";
 import { toBase64 } from "./util";
+
+async function stakeAuto(
+  client: SigningCosmWasmClient,
+  wallet: DirectSecp256k1HdWallet,
+  numStakes: number
+) {
+  const [account] = await wallet.getAccounts();
+  const amount = STAN_STAKE * numStakes;
+  const result = await client.execute(
+    account.address,
+    registry,
+    {
+      stake_denom: {
+        num_stakes: numStakes,
+      },
+    },
+    "auto",
+    undefined,
+    [coin(amount, auto_denom)]
+  );
+  return result;
+}
+
+async function unstakeAuto(
+  client: SigningCosmWasmClient,
+  wallet: DirectSecp256k1HdWallet,
+  idxs: number[]
+) {
+  const [account] = await wallet.getAccounts();
+  await client.execute(
+    account.address,
+    registry,
+    {
+      unstake: {
+        idxs: idxs,
+      },
+    },
+    "auto"
+  );
+}
+
+async function updateExecutor(
+  client: SigningCosmWasmClient,
+  wallet: DirectSecp256k1HdWallet
+) {
+  const [account] = await wallet.getAccounts();
+  await client.execute(
+    account.address,
+    registry,
+    {
+      update_executor: {},
+    },
+    "auto"
+  );
+}
 
 async function createSwapRequest(client: RegistryClient) {
   const swap = {
@@ -75,9 +138,20 @@ async function createEmptyRequest(client: RegistryClient) {
 }
 
 async function main() {
-  const client = await getRegistryClient();
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+    process.env.MNEMONIC || "",
+    { prefix: "osmo" }
+  );
+  const client = await SigningCosmWasmClient.connectWithSigner(
+    MAIN_NETWORK,
+    wallet,
+    GASPRICE.length ? { gasPrice: GasPrice.fromString(GASPRICE) } : undefined
+  );
 
-  await createEmptyRequest(client);
+  const result = await stakeAuto(client, wallet, 1);
+  console.log(result);
+
+  // await createEmptyRequest(client);
 }
 
 main().catch(console.error);
