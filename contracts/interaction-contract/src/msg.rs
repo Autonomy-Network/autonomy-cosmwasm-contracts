@@ -4,7 +4,9 @@ use serde::{Serialize, Deserialize};
 pub struct InstantiateMsg {}
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct ExecuteMsg{}
+pub enum ExecuteMsg{
+   DoNothing {}
+}
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct QueryMsg{}

@@ -31,10 +31,11 @@ pub fn execute(
     _deps: DepsMut,
     _env: Env,
     _info: MessageInfo,
-    _msg: ExecuteMsg,
+    msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
-    Ok(Response::new()
-        .add_attribute("Execute", "Success"))
+    match msg {
+        ExecuteMsg::DoNothing {  } => Ok(Response::new().add_attribute("Execute", "Success"))
+    }
 }
 
 // Queries a contract 
