@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_info, mock_env};
-    use empty_tx::{contract::{instantiate, execute}, msg::{InstantiateMsg, ExecuteMsg}};
+    use empty_contract::{msg::{InstantiateMsg, ExecuteMsg}, contract::{instantiate, execute}};
 
     #[test]
     fn test_instantiate() {
