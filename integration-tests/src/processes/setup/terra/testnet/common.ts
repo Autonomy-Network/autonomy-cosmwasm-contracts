@@ -3,7 +3,6 @@ import chalk from "chalk";
 import { LocalTerra, Wallet, MsgExecuteContract, LCDClient } from "@terra-money/terra.js";
 
 import { storeCode, instantiateContract, sendTransaction, toEncodedBinary } from "../../../../utils/terra/helpers";
-import { wasm_path } from "../../../../config/wasmPaths";
 import { testnet } from '../../../../config/terraConstants';
 
 
