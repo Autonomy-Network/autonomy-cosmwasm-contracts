@@ -11,16 +11,19 @@ export const auto_denom =
 
 // testnet
 export const registry =
-  "osmo1zynr26u48vdjrcuxkgswfhcx4zh5lw58qshzycykf33p7fp5y32qkydwrp";
+  "osmo124as70630wa94lpyyqjczc4ne0hsryycg3qdp40s5ljh8qr2nv8szqka4q";
 export const wrapper =
-  "osmo1g85sgdggdhez4htjj3d9m2zw734dt4ap6gdcymp6ymrveq5d48nswqkuww";
+  "osmo1c5e5hn72fv24m35aavzv8z9unljfgm7yn0tp6uxtpdlyypmj530sm3sz03";
 
 // export const registryCodeId = 4920;
 // export const wrapperCodeId = 4921;
 
 // export const STAN_STAKE = 10000;
 
-export const registryCodeId = 478;
-export const wrapperCodeId = 270;
+// export const registryCodeId = 478;
+// export const wrapperCodeId = 270;
+
+export const registryCodeId = 6207;
+export const wrapperCodeId = 6208;
 
 export const STAN_STAKE = 10000;
