@@ -4,8 +4,13 @@ use cosmwasm_std::{
     coins, entry_point, to_binary, BankMsg, CosmosMsg, DepsMut, Env, MessageInfo, Response,
     StdResult, Uint128, WasmMsg,
 };
+
+
 use cw2::{get_contract_version, set_contract_version};
 use osmo_bindings::{OsmosisMsg, OsmosisQuery, Step, Swap, SwapAmountWithLimit};
+use osmosis_std::types::osmosis::gamm::v1beta1::{MsgSwapExactAmountIn, SwapAmountInRoute};
+use osmosis_std::types::cosmos::base::v1beta1::{Coin};
+
 use semver::Version;
 
 use crate::error::WrapperError;
@@ -82,13 +87,12 @@ pub fn execute(
     match msg {
         ExecuteMsg::Swap {
             user,
-            first,
             route,
-            amount,
+            token_in,
             min_output,
             max_output,
         } => execute_swap(
-            deps, env, info, user, first, route, amount, min_output, max_output,
+            deps, env, info, user, route, token_in, min_output, max_output,
         ),
 
         ExecuteMsg::CheckRange {
@@ -136,30 +140,36 @@ pub fn execute_swap(
     env: Env,
     _info: MessageInfo,
     user: String,
-    first: Swap,
-    route: Vec<Step>,
-    amount: Uint128,
+    route: Vec<SwapAmountInRoute>,
+    token_in: String,
     min_output: Uint128,
     max_output: Uint128,
 ) -> Result<Response<OsmosisMsg>, WrapperError> {
     let mut msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![];
 
-    // Prepare swap message
-    let swap = OsmosisMsg::Swap {
-        first: first.clone(),
-        amount: SwapAmountWithLimit::ExactIn {
-            input: amount,
-            min_output,
-        },
-        route: route.clone(),
+    let amount_in: String = token_in.chars().filter(|c| c.is_digit(10)).collect();
+    let denom_in: String = token_in.chars().filter(|c| !c.is_digit(10)).collect();
+
+    let coin_in = Coin{
+        denom: denom_in,
+        amount: amount_in,
     };
+
+    let swap = MsgSwapExactAmountIn {
+        sender: user,
+        routes: route,
+        token_in: Some(coin_in),
+        token_out_min_amount: min_output.to_string(),
+    };
+
+    // Prepare swap message
     msgs.push(swap.into());
 
     // Get output denom
-    let last_denom = if !route.is_empty() {
-        route[route.len() - 1].denom_out.clone()
+    let last_denom = if !msg.routes.is_empty() {
+        msg.routes[msg.routes.len() - 1].token_out_denom.clone()
     } else {
-        first.denom_out
+        unwrap_token_string(msg.token_out_min_amount, true)
     };
 
     // Read current balance of the output asset
@@ -171,10 +181,10 @@ pub fn execute_swap(
     msgs.push(CosmosMsg::Wasm(WasmMsg::Execute {
         contract_addr: env.contract.address.to_string(),
         msg: to_binary(&ExecuteMsg::CheckRange {
-            user,
+            user: msg.sender,
             denom: last_denom,
             balance_before: coin_balance.amount,
-            min_output,
+            extract_denom_from_token_string(token: String, extract_denom: bool),
             max_output,
         })?,
         funds: vec![],
@@ -184,6 +194,21 @@ pub fn execute_swap(
         .add_attribute("action", "swap")
         .add_messages(msgs))
 }
+
+fn unwrap_token_string(
+    token: String,
+    extract_denom: bool
+) -> String {
+    if extract_denom {
+        let t: String = token.chars().filter(|c| !c.is_digit(10)).collect();
+        return t
+    }
+
+    let t: String = token.chars().filter(|c| c.is_digit(10)).collect();
+    t
+}
+
+
 
 /// ## Description
 /// Validates swap output result. Returns [`WrapperError`] on failure.

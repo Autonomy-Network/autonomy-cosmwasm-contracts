@@ -1,4 +1,5 @@
-use osmo_bindings::{Step, Swap};
+// use osmo_bindings::{Step, Swap};
+use osmosis_std::types::osmosis::gamm::v1beta1::{ SwapAmountInRoute, SwapAmountOutRoute, MsgSwapExactAmountIn};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -16,12 +17,10 @@ pub enum ExecuteMsg {
     Swap {
         // Address of the user for this swap
         user: String,
-        // Input asset info
-        first: Swap,
         // Swap routes
-        route: Vec<Step>,
-        // Input amount
-        amount: Uint128,
+        route: Vec<SwapAmountInRoute>,
+        // Input token
+        token_in: String,
         // Minimum output amount
         min_output: Uint128,
         // Maximum output amount
