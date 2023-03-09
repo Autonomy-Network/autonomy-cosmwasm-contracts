@@ -2,6 +2,8 @@
 import { is } from "ramda";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { StdFee, calculateFee, GasPrice } from "@cosmjs/stargate";
+
 import fs from "fs";
 
 export const omitEmpty = (object: object): object =>
@@ -54,13 +56,15 @@ export async function instantiateContract(
   instantiateMsg: Record<string, unknown>
 ) {
   const [account] = await deployer.getAccounts();
+  const defaultGasPrice = GasPrice.fromString("0.025uosmo");
+  const defaultSendFee: StdFee = calculateFee(200_000, defaultGasPrice);
   const result = await client.instantiate(
     account.address,
     codeId,
     instantiateMsg,
     "instantiate",
-    "auto",
-    { admin: account.address },
+    defaultSendFee,
+    { admin: account.address }
   );
   return result;
 }

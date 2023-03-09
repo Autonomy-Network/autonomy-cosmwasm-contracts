@@ -168,7 +168,7 @@ pub fn execute_swap(
         .query_balance(env.contract.address.to_string(), last_denom.clone())?;
 
     // Add msg to check output amount
-    msgs.push(CosmosMsg::Wasm(WasmMsg::Execute {
+    msgs.push(CosmosMsg<OsmosisMsg>::Wasm(WasmMsg::Execute {
         contract_addr: env.contract.address.to_string(),
         msg: to_binary(&ExecuteMsg::CheckRange {
             user,
@@ -239,7 +239,7 @@ pub fn execute_check_range(
     }
 
     // Transfer output asset to the user
-    let msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![CosmosMsg::Bank(BankMsg::Send {
+    let msgs: Vec<CosmosMsg<OsmosisMsg>> = vec![CosmosMsg<OsmosisMsg>::Bank(BankMsg::Send {
         to_address: user_addr.to_string(),
         amount: coins(output.u128(), denom),
     })];
@@ -322,7 +322,7 @@ mod tests {
                     input: Uint128::from(10u128),
                     min_output: Uint128::from(10u128),
                 } }),
-                SubMsg::new(CosmosMsg::Wasm(WasmMsg::Execute {
+                SubMsg::new(CosmosMsg<OsmosisMsg>::Wasm(WasmMsg::Execute {
                     contract_addr: MOCK_CONTRACT_ADDR.to_string(),
                     msg: to_binary(&ExecuteMsg::CheckRange {
                         user: "addr0".to_string(),
@@ -385,7 +385,7 @@ mod tests {
             res.messages,
             vec![
                 SubMsg::new(
-                    CosmosMsg::Bank(BankMsg::Send {
+                    CosmosMsg<OsmosisMsg>::Bank(BankMsg::Send {
                         to_address: "addr0".to_string(),
                         amount: coins(100u128, "earth"),
                     })
